@@ -6,6 +6,7 @@ import {
   AdParagraph,
   type CalendarIntegrationStatusInterface,
   NucCalendarIntegrationTile,
+  t,
 } from 'nucleify'
 
 import './_index.scss'
@@ -22,10 +23,10 @@ export const NucCalendarIntegrationGrid: React.FC<
     <section className="calendar-integration-grid">
       <header className="calendar-integration-grid-header">
         <h2 className="calendar-integration-grid-title">
-          Connect your calendars
+          {t('calendar-integrations-title')}
         </h2>
         <AdParagraph
-          text="Import meetings from Calendly, Google Calendar, Outlook, and more in one place."
+          text={t('calendar-integrations-subtitle')}
           className="calendar-integration-grid-subtitle"
         />
       </header>

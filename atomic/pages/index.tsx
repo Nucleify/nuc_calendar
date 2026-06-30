@@ -22,6 +22,7 @@ import {
   NucCalendarIntegrationGrid,
   parseCalendarView,
   shiftCalendarAnchor,
+  t,
   toIsoRange,
 } from 'nucleify'
 
@@ -150,7 +151,7 @@ export function NucCalendarPage(): JSX.Element {
         modal
         className="calendar-integrations-dialog"
         showHeader
-        header={<span>Integrations</span>}
+        header={<span>{t('calendar-integrations')}</span>}
         onHide={() => setIntegrationsVisible(false)}
       >
         <NucCalendarIntegrationGrid integrations={integrationsList} />

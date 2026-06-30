@@ -12,6 +12,7 @@ import {
   monthGridDays,
   NucCalendarEventBlock,
   type NucCalendarEventObjectInterface,
+  t,
   weekDays,
 } from 'nucleify'
 
@@ -78,7 +79,9 @@ export const NucCalendarMonthGrid: React.FC<NucCalendarMonthGridProps> = ({
                 />
               ))}
               {hiddenCount > 0 ? (
-                <p className="calendar-month-grid-more">+{hiddenCount} more</p>
+                <p className="calendar-month-grid-more">
+                  {t('calendar-more-events', { count: hiddenCount })}
+                </p>
               ) : null}
             </div>
           )

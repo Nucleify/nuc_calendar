@@ -33,8 +33,9 @@
           v-if="monthEvents(day).hiddenCount > 0"
           class="calendar-month-grid-more"
         >
-          +{{ monthEvents(day).hiddenCount }}
-          more
+          {{ t('calendar-more-events', {
+              count: monthEvents(day).hiddenCount,
+            }) }}
         </p>
       </div>
     </div>
@@ -43,6 +44,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import type { NucCalendarEventObjectInterface } from 'nucleify'
 import {
@@ -66,6 +68,8 @@ const emit = defineEmits<{
   'day-click': [day: Date]
   'event-select': [event: NucCalendarEventObjectInterface]
 }>()
+
+const { t } = useI18n()
 
 const days = computed(() =>
   monthGridDays(props.anchor, props.weekStartsOn ?? 1)

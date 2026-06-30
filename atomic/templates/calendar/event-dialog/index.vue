@@ -6,7 +6,9 @@
     @update:visible="onVisibleUpdate"
   >
     <template #header>
-      <span>{{ mode === 'edit' ? 'Edit event' : 'New event' }}</span>
+      <span
+        >{{ mode === 'edit' ? t('calendar-edit-event') : t('calendar-new-event') }}</span
+      >
     </template>
 
     <form class="form-container" action="#" @submit.prevent="submit">
@@ -28,19 +30,24 @@
       <div class="dialog-buttons-container">
         <ad-button
           v-if="mode === 'edit' && draft.id"
-          label="Cancel event"
+          :label="t('calendar-cancel-event')"
           severity="secondary"
           @click="emit('cancel-event', draft.id)"
         />
-        <ad-button label="Close" severity="secondary" @click="emit('close')" />
-        <ad-button label="Save" ad-type="main" @click="submit" />
+        <ad-button
+          :label="t('common-close')"
+          severity="secondary"
+          @click="emit('close')"
+        />
+        <ad-button :label="t('common-save')" ad-type="main" @click="submit" />
       </div>
     </template>
   </ad-dialog>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import type { CalendarEventDraft, ComponentType } from 'nucleify'
 import {
@@ -63,7 +70,8 @@ const emit = defineEmits<{
   'cancel-event': [id: number]
 }>()
 
-const { fields } = useCalendarEventFields()
+const { t } = useI18n()
+const fields = computed(() => useCalendarEventFields(t).fields)
 const draft = ref<CalendarEventDraft>({ ...props.draft })
 
 watch(

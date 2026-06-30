@@ -10,7 +10,11 @@
           ad-type="secondary"
           @click="emit('navigate', -1)"
         />
-        <ad-button label="Today" ad-type="secondary" @click="emit('today')" />
+        <ad-button
+          :label="t('calendar-today')"
+          ad-type="secondary"
+          @click="emit('today')"
+        />
         <ad-button
           icon="prime:chevron-right"
           ad-type="secondary"
@@ -36,12 +40,12 @@
         <ad-button
           icon="prime:cog"
           ad-type="secondary"
-          aria-label="Integrations"
+          :aria-label="t('calendar-integrations')"
           :class="{ 'calendar-board-integrations-active': integrationsOpen }"
           @click="emit('open-integrations')"
         />
         <ad-button
-          label="New event"
+          :label="t('calendar-new-event')"
           icon="prime:plus"
           ad-type="main"
           @click="emit('new-event')"
@@ -82,6 +86,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import type { CalendarView, NucCalendarEventObjectInterface } from 'nucleify'
 import { CALENDAR_VIEWS, formatRangeLabel } from 'nucleify'
@@ -108,13 +113,14 @@ const emit = defineEmits<{
   'event-select': [event: NucCalendarEventObjectInterface]
 }>()
 
+const { t } = useI18n()
 const views = CALENDAR_VIEWS
 
-const viewLabels: Record<CalendarView, string> = {
-  day: 'Day',
-  week: 'Week',
-  month: 'Month',
-}
+const viewLabels = computed<Record<CalendarView, string>>(() => ({
+  day: t('calendar-view-day'),
+  week: t('calendar-view-week'),
+  month: t('calendar-view-month'),
+}))
 
 const rangeLabel = computed(() =>
   formatRangeLabel(props.view, props.anchor, props.weekStartsOn ?? 1)

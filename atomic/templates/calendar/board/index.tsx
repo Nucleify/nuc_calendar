@@ -12,15 +12,10 @@ import {
   type NucCalendarEventObjectInterface,
   NucCalendarMonthGrid,
   NucCalendarWeekGrid,
+  t,
 } from 'nucleify'
 
 import './_index.scss'
-
-const VIEW_LABELS: Record<CalendarView, string> = {
-  day: 'Day',
-  week: 'Week',
-  month: 'Month',
-}
 
 interface NucCalendarBoardProps {
   view: CalendarView
@@ -64,6 +59,15 @@ export const NucCalendarBoard: React.FC<NucCalendarBoardProps> = ({
     [anchor, view, weekStartsOn]
   )
 
+  const viewLabels = useMemo<Record<CalendarView, string>>(
+    () => ({
+      day: t('calendar-view-day'),
+      week: t('calendar-view-week'),
+      month: t('calendar-view-month'),
+    }),
+    []
+  )
+
   return (
     <section
       className={`calendar-board${loading ? ' calendar-board-loading' : ''}`}
@@ -75,7 +79,11 @@ export const NucCalendarBoard: React.FC<NucCalendarBoardProps> = ({
             adType="secondary"
             onClick={() => onNavigate?.(-1)}
           />
-          <AdButton label="Today" adType="secondary" onClick={onToday} />
+          <AdButton
+            label={t('calendar-today')}
+            adType="secondary"
+            onClick={onToday}
+          />
           <AdButton
             icon="prime:chevron-right"
             adType="secondary"
@@ -95,21 +103,21 @@ export const NucCalendarBoard: React.FC<NucCalendarBoardProps> = ({
                 className={`calendar-board-view-button${item === view ? ' calendar-board-view-button-active' : ''}`}
                 onClick={() => onViewChange?.(item)}
               >
-                {VIEW_LABELS[item]}
+                {viewLabels[item]}
               </button>
             ))}
           </div>
           <AdButton
             icon="prime:cog"
             adType="secondary"
-            aria-label="Integrations"
+            aria-label={t('calendar-integrations')}
             className={
               integrationsOpen ? 'calendar-board-integrations-active' : ''
             }
             onClick={onOpenIntegrations}
           />
           <AdButton
-            label="New event"
+            label={t('calendar-new-event')}
             icon="prime:plus"
             adType="main"
             onClick={onNewEvent}

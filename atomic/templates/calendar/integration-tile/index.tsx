@@ -8,6 +8,7 @@ import {
   AdParagraph,
   CALENDAR_INTEGRATION_ICONS,
   type CalendarIntegrationStatusInterface,
+  t,
 } from 'nucleify'
 
 import './_index.scss'
@@ -21,7 +22,9 @@ export const NucCalendarIntegrationTile: React.FC<
   NucCalendarIntegrationTileProps
 > = ({ integration, onConnect }) => {
   const icon = CALENDAR_INTEGRATION_ICONS[integration.id] ?? 'mdi:calendar'
-  const connectLabel = integration.connectable ? 'Connect' : 'Coming soon'
+  const connectLabel = integration.connectable
+    ? t('calendar-connect')
+    : t('common-coming-soon')
 
   return (
     <article className="calendar-integration-tile">
@@ -40,10 +43,12 @@ export const NucCalendarIntegrationTile: React.FC<
       />
       <div className="calendar-integration-tile-footer">
         {integration.connected ? (
-          <span className="calendar-integration-tile-badge">Connected</span>
+          <span className="calendar-integration-tile-badge">
+            {t('calendar-connected')}
+          </span>
         ) : null}
         <AdButton
-          label={integration.connected ? 'Manage' : connectLabel}
+          label={integration.connected ? t('calendar-manage') : connectLabel}
           adType={integration.connected ? 'secondary' : 'main'}
           disabled={!integration.connectable}
           onClick={() => onConnect?.(integration.id)}

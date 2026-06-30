@@ -10,6 +10,7 @@ import {
   getComponent,
   isSelectOrDatePicker,
   readCalendarEventFieldValue,
+  t,
   useCalendarEventFields,
   writeCalendarEventFieldValue,
 } from 'nucleify'
@@ -33,7 +34,7 @@ export const NucCalendarEventDialog: React.FC<NucCalendarEventDialogProps> = ({
   onSave,
   onCancelEvent,
 }) => {
-  const { fields } = useCalendarEventFields()
+  const { fields } = useCalendarEventFields(t)
   const [draft, setDraft] = useState<CalendarEventDraft>({ ...initialDraft })
 
   useEffect(() => {
@@ -60,19 +61,27 @@ export const NucCalendarEventDialog: React.FC<NucCalendarEventDialogProps> = ({
         onClose?.()
       }}
       showHeader
-      header={<span>{mode === 'edit' ? 'Edit event' : 'New event'}</span>}
+      header={
+        <span>
+          {mode === 'edit' ? t('calendar-edit-event') : t('calendar-new-event')}
+        </span>
+      }
       footer={
         <div className="dialog-buttons-container">
           {mode === 'edit' && draft.id ? (
             <AdButton
-              label="Cancel event"
+              label={t('calendar-cancel-event')}
               severity="secondary"
               onClick={() => onCancelEvent?.(draft.id as number)}
             />
           ) : null}
-          <AdButton label="Close" severity="secondary" onClick={onClose} />
           <AdButton
-            label="Save"
+            label={t('common-close')}
+            severity="secondary"
+            onClick={onClose}
+          />
+          <AdButton
+            label={t('common-save')}
             adType="main"
             onClick={() => onSave?.({ ...draft })}
           />

@@ -24,7 +24,9 @@
       class="calendar-integrations-dialog"
       @update:visible="onIntegrationsVisibleUpdate"
     >
-      <template #header> <span>Integrations</span> </template>
+      <template #header>
+        <span>{{ t('calendar-integrations') }}</span>
+      </template>
       <nuc-calendar-integration-grid :integrations="integrationsList" />
     </ad-dialog>
     <nuc-calendar-event-dialog
@@ -40,6 +42,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import type {
   CalendarEventDraft,
@@ -71,6 +74,8 @@ const {
   updateEvent,
   cancelEvent,
 } = calendarRequests()
+
+const { t } = useI18n()
 
 const view = ref<CalendarView>(parseCalendarView(CALENDAR_DEFAULT_VIEW))
 const anchor = ref(new Date())

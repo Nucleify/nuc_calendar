@@ -14,10 +14,14 @@
         v-if="integration.connected"
         class="calendar-integration-tile-badge"
       >
-        Connected
+        {{ t('calendar-connected') }}
       </span>
       <ad-button
-        :label="integration.connected ? 'Manage' : connectLabel"
+        :label="
+          integration.connected
+            ? t('calendar-manage')
+            : connectLabel
+        "
         :ad-type="integration.connected ? 'secondary' : 'main'"
         :disabled="!integration.connectable"
         @click="emit('connect', integration.id)"
@@ -28,6 +32,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import type { CalendarIntegrationStatusInterface } from 'nucleify'
 
@@ -41,12 +46,16 @@ const emit = defineEmits<{
   connect: [providerId: CalendarIntegrationStatusInterface['id']]
 }>()
 
+const { t } = useI18n()
+
 const icon = computed(
   () => CALENDAR_INTEGRATION_ICONS[props.integration.id] ?? 'mdi:calendar'
 )
 
 const connectLabel = computed(() =>
-  props.integration.connectable ? 'Connect' : 'Coming soon'
+  props.integration.connectable
+    ? t('calendar-connect')
+    : t('common-coming-soon')
 )
 </script>
 

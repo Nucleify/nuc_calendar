@@ -1,10 +1,11 @@
 <template>
   <section class="calendar-integration-grid">
     <header class="calendar-integration-grid-header">
-      <h2 class="calendar-integration-grid-title">Connect your calendars</h2>
+      <h2 class="calendar-integration-grid-title">
+        {{ t('calendar-integrations-title') }}
+      </h2>
       <p class="calendar-integration-grid-subtitle">
-        Import meetings from Calendly, Google Calendar, Outlook, and more in one
-        place.
+        {{ t('calendar-integrations-subtitle') }}
       </p>
     </header>
     <div class="calendar-integration-grid-items">
@@ -19,6 +20,8 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 import type { CalendarIntegrationStatusInterface } from 'nucleify'
 
 defineProps<{
@@ -28,6 +31,8 @@ defineProps<{
 const emit = defineEmits<{
   connect: [providerId: CalendarIntegrationStatusInterface['id']]
 }>()
+
+const { t } = useI18n()
 </script>
 
 <style lang="scss">
