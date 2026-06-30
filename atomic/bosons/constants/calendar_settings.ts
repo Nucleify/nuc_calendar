@@ -1,0 +1,11 @@
+export const CALENDAR_DEFAULT_VIEW = 'week'
+export const CALENDAR_DAY_START_HOUR = 7
+export const CALENDAR_DAY_END_HOUR = 20
+export const CALENDAR_HOUR_HEIGHT = 56
+export const CALENDAR_WEEK_STARTS_ON = 1
+export const CALENDAR_SLOT_DURATION_MINUTES = 30
+export const CALENDAR_DEFAULT_TIMEZONE = 'Europe/Warsaw'
+export const CALENDAR_ENABLE_PUBLIC_BOOKING = false
+export const CALENDAR_CONFLICT_POLICY = 'warn'
+
+export type CalendarConflictPolicy = typeof CALENDAR_CONFLICT_POLICY | 'block'

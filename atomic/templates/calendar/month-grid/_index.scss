@@ -1,0 +1,81 @@
+.calendar-month-grid {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  color: $white-text-color;
+  background: $content-background;
+
+  .calendar-month-grid-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    flex-shrink: 0;
+  }
+
+  .calendar-month-grid-weekday {
+    padding: 0.5em;
+    text-align: center;
+    font-size: 0.75em;
+    font-weight: 600;
+    color: $secondary-text-color;
+    background: $p-card-background;
+    border-bottom: 1px solid $p-card-border;
+    border-right: 1px solid $p-card-border;
+
+    &:nth-child(7n) {
+      border-right: none;
+    }
+  }
+
+  .calendar-month-grid-cells {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(6, minmax(5em, 1fr));
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  .calendar-month-grid-cell {
+    min-height: 5em;
+    padding: 0.35em;
+    border-right: 1px solid $p-card-border;
+    border-bottom: 1px solid $p-card-border;
+    background: $content-background;
+
+    &:nth-child(7n) {
+      border-right: none;
+    }
+
+    &.calendar-month-grid-cell-outside {
+      color: $secondary-text-color;
+      background: $bg-dark-color;
+    }
+
+    &.calendar-month-grid-cell-today {
+      background: $primary-selected-color;
+
+      .calendar-month-grid-day-number {
+        color: $primary-color;
+      }
+    }
+
+    .calendar-month-grid-day-number {
+      margin: 0 0 0.35em;
+      font-size: 0.8em;
+      font-weight: 600;
+      text-align: right;
+      color: $white-text-color;
+    }
+
+    .calendar-month-grid-more {
+      margin: 0;
+      font-size: 0.65em;
+      color: $secondary-text-color;
+    }
+  }
+}

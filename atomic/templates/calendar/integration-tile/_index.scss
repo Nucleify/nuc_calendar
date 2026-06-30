@@ -1,0 +1,64 @@
+.calendar-integration-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+  padding: 1em;
+  border: 1px solid $p-card-border;
+  border-radius: 0.75em;
+  background: $p-card-background;
+  min-height: 10em;
+  color: $white-text-color;
+  box-shadow: $p-card-box-shadow;
+  transition: border-color 0.2s ease, background 0.2s ease;
+
+  &:hover {
+    border-color: $primary-border-color;
+    background: $content-background;
+  }
+
+  .calendar-integration-tile-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+
+    .calendar-integration-tile-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5em;
+      height: 2.5em;
+      border-radius: 0.5em;
+      background: $primary-selected-color;
+      color: $primary-color;
+    }
+
+    .calendar-integration-tile-name {
+      margin: 0;
+      font-weight: 600;
+      color: $white-text-color;
+    }
+  }
+
+  .calendar-integration-tile-description {
+    margin: 0;
+    font-size: 0.875em;
+    color: $secondary-text-color;
+    flex: 1;
+  }
+
+  .calendar-integration-tile-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5em;
+    margin-top: auto;
+
+    .calendar-integration-tile-badge {
+      font-size: 0.75em;
+      padding: 0.25em 0.5em;
+      border-radius: 999px;
+      background: $primary-selected-color;
+      color: $primary-color;
+    }
+  }
+}

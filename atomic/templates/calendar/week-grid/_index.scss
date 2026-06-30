@@ -1,0 +1,96 @@
+.calendar-week-grid {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  color: $white-text-color;
+
+  .calendar-week-grid-header {
+    display: grid;
+    grid-template-columns: 4.5em repeat(7, 1fr);
+    flex-shrink: 0;
+    border-bottom: 1px solid $p-card-border;
+    background: $p-card-background;
+
+    .calendar-week-grid-header-spacer {
+      border-right: 1px solid $p-card-border;
+    }
+
+    .calendar-week-grid-day-header {
+      padding: 0.5em;
+      text-align: center;
+      border-right: 1px solid $p-card-border;
+
+      &:last-child {
+        border-right: none;
+      }
+
+      .calendar-week-grid-weekday {
+        margin: 0;
+        font-size: 0.75em;
+        color: $secondary-text-color;
+      }
+
+      .calendar-week-grid-day-number {
+        margin: 0;
+        font-weight: 600;
+        color: $white-text-color;
+
+        &.calendar-week-grid-day-number-today {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 1.75em;
+          height: 1.75em;
+          border-radius: 999px;
+          background: $primary-color;
+          color: $primary-white-text-color;
+        }
+      }
+    }
+  }
+
+  .calendar-week-grid-body {
+    display: grid;
+    grid-template-columns: 4.5em repeat(7, 1fr);
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    background: $content-background;
+
+    .calendar-week-grid-hours-column {
+      pointer-events: none;
+      border-right: 1px solid $p-card-border;
+      background: $p-card-background;
+
+      .calendar-day-grid-body {
+        display: none;
+      }
+
+      .calendar-day-grid-hours {
+        flex: 0 0 100%;
+        width: 100%;
+      }
+
+      .calendar-day-grid-track {
+        width: 100%;
+      }
+    }
+
+    .calendar-week-grid-day-column {
+      position: relative;
+      border-right: 1px solid $p-card-border;
+      background: $content-background;
+
+      &:nth-child(even) {
+        background: $p-card-background;
+      }
+
+      &:last-child {
+        border-right: none;
+      }
+    }
+  }
+}

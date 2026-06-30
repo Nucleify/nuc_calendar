@@ -1,0 +1,30 @@
+.calendar-integration-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  color: $white-text-color;
+
+  .calendar-integration-grid-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+
+    .calendar-integration-grid-title {
+      margin: 0;
+      font-size: 1.25em;
+      font-weight: 600;
+      color: $white-text-color;
+    }
+
+    .calendar-integration-grid-subtitle {
+      margin: 0;
+      color: $secondary-text-color;
+    }
+  }
+
+  .calendar-integration-grid-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14em, 1fr));
+    gap: 1em;
+  }
+}

@@ -1,0 +1,51 @@
+html:has(#calendar) {
+  overflow: hidden;
+  height: 100%;
+}
+
+body:has(#calendar) {
+  overflow: hidden;
+  height: 100%;
+
+  #back-office {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 100vh;
+    overflow: hidden;
+
+    main {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+  }
+}
+
+#calendar {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+
+  .panel-container {
+    flex: 1;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  .calendar-board {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+}
+
+.calendar-integrations-dialog {
+  width: min(56em, 95vw);
+  max-width: 56em;
+}

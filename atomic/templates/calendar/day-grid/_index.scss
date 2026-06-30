@@ -1,0 +1,101 @@
+.calendar-day-grid {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  color: $white-text-color;
+
+  &.calendar-day-grid-embedded {
+    height: auto;
+    flex: none;
+    min-height: auto;
+  }
+
+  .calendar-day-grid-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  &.calendar-day-grid-embedded .calendar-day-grid-scroll {
+    flex: none;
+    min-height: auto;
+    overflow: visible;
+  }
+
+  .calendar-day-grid-track {
+    display: flex;
+    width: 100%;
+  }
+
+  .calendar-day-grid-hours {
+    flex: 0 0 4.5em;
+    position: relative;
+    background: $p-card-background;
+
+    .calendar-day-grid-hour-label {
+      position: absolute;
+      right: 0.5em;
+      left: 0;
+      padding-left: 0.25em;
+      white-space: nowrap;
+      font-size: 0.7em;
+      line-height: 1;
+      color: $secondary-text-color;
+    }
+  }
+
+  .calendar-day-grid-body {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    border-left: 1px solid $p-card-border;
+    background: inherit;
+
+    .calendar-day-grid-hour-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      border-top: 1px solid $p-card-border;
+      pointer-events: none;
+    }
+
+    .calendar-day-grid-slot {
+      position: absolute;
+      left: 0;
+      right: 0;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      cursor: pointer;
+      background: transparent;
+      border: 1px solid transparent;
+      z-index: 0;
+      transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+
+      &:hover,
+      &:focus-visible {
+        background: $bg-green-color-05;
+        border-color: $primary-color;
+        box-shadow: inset 0 0 0 1px $primary-color;
+        z-index: 1;
+      }
+    }
+
+    .calendar-day-grid-now-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      border-top: 2px solid $invalid-color;
+      z-index: 3;
+      pointer-events: none;
+      box-shadow: 0 0 6px $invalid-box-shadow;
+    }
+  }
+}
