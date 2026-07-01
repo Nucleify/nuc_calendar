@@ -84,12 +84,38 @@ alter table public.calendar_event_attendees enable row level security;
 
 drop policy if exists "calendar_calendars_authenticated_all" on public.calendar_calendars;
 create policy "calendar_calendars_authenticated_all"
-on public.calendar_calendars for all to authenticated using (true) with check (true);
+on public.calendar_calendars
+for all
+to authenticated
+using (user_id = auth.uid())
+with check (user_id = auth.uid());
 
 drop policy if exists "calendar_events_authenticated_all" on public.calendar_events;
 create policy "calendar_events_authenticated_all"
-on public.calendar_events for all to authenticated using (true) with check (true);
+on public.calendar_events
+for all
+to authenticated
+using (user_id = auth.uid())
+with check (user_id = auth.uid());
 
 drop policy if exists "calendar_event_attendees_authenticated_all" on public.calendar_event_attendees;
 create policy "calendar_event_attendees_authenticated_all"
-on public.calendar_event_attendees for all to authenticated using (true) with check (true);
+on public.calendar_event_attendees
+for all
+to authenticated
+using (
+  exists (
+    select 1
+    from public.calendar_events e
+    where e.id = event_id
+      and e.user_id = auth.uid()
+  )
+)
+with check (
+  exists (
+    select 1
+    from public.calendar_events e
+    where e.id = event_id
+      and e.user_id = auth.uid()
+  )
+);

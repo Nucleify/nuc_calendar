@@ -1,7 +1,7 @@
 {
   "name": "nuc_calendar",
   "description": "Calendar, meetings, and appointment booking with month/week/day views.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "category": "feature",
   "installed": true,
   "enabled": true
