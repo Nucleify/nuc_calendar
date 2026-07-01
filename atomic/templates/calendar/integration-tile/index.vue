@@ -35,8 +35,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import type { CalendarIntegrationStatusInterface } from 'nucleify'
-
-import { CALENDAR_INTEGRATION_ICONS } from '../../../bosons/utils/integration_provider_icons'
+import { CALENDAR_INTEGRATION_ICONS } from 'nucleify'
 
 const props = defineProps<{
   integration: CalendarIntegrationStatusInterface

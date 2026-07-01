@@ -5,6 +5,8 @@ import React, { useMemo } from 'react'
 import {
   AdButton,
   AdParagraph,
+  CALENDAR_DAY_VIEW_END_HOUR,
+  CALENDAR_DAY_VIEW_START_HOUR,
   CALENDAR_VIEWS,
   type CalendarView,
   formatRangeLabel,
@@ -34,6 +36,16 @@ interface NucCalendarBoardProps {
   onSlotClick?: (day: Date, hour: number) => void
   onDayClick?: (day: Date) => void
   onEventSelect?: (event: NucCalendarEventObjectInterface) => void
+  onEventMove?: (payload: {
+    id: number
+    starts_at: string
+    ends_at: string
+  }) => void
+  onEventResize?: (payload: {
+    id: number
+    starts_at: string
+    ends_at: string
+  }) => void
 }
 
 export const NucCalendarBoard: React.FC<NucCalendarBoardProps> = ({
@@ -53,6 +65,8 @@ export const NucCalendarBoard: React.FC<NucCalendarBoardProps> = ({
   onSlotClick,
   onDayClick,
   onEventSelect,
+  onEventMove,
+  onEventResize,
 }) => {
   const rangeLabel = useMemo(
     () => formatRangeLabel(view, anchor, weekStartsOn),
@@ -137,20 +151,24 @@ export const NucCalendarBoard: React.FC<NucCalendarBoardProps> = ({
           <NucCalendarWeekGrid
             anchor={anchor}
             events={events}
-            dayStartHour={dayStartHour}
-            dayEndHour={dayEndHour}
+            dayStartHour={CALENDAR_DAY_VIEW_START_HOUR}
+            dayEndHour={CALENDAR_DAY_VIEW_END_HOUR}
             weekStartsOn={weekStartsOn}
             onSlotClick={onSlotClick}
             onEventSelect={onEventSelect}
+            onEventMove={onEventMove}
+            onEventResize={onEventResize}
           />
         ) : (
           <NucCalendarDayGrid
             day={anchor}
             events={events}
-            dayStartHour={dayStartHour}
-            dayEndHour={dayEndHour}
+            dayStartHour={CALENDAR_DAY_VIEW_START_HOUR}
+            dayEndHour={CALENDAR_DAY_VIEW_END_HOUR}
             onSlotClick={onSlotClick}
             onEventSelect={onEventSelect}
+            onEventMove={onEventMove}
+            onEventResize={onEventResize}
           />
         )}
       </div>

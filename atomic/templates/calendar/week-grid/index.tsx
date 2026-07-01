@@ -23,6 +23,16 @@ interface NucCalendarWeekGridProps {
   weekStartsOn?: number
   onSlotClick?: (day: Date, hour: number) => void
   onEventSelect?: (event: NucCalendarEventObjectInterface) => void
+  onEventMove?: (payload: {
+    id: number
+    starts_at: string
+    ends_at: string
+  }) => void
+  onEventResize?: (payload: {
+    id: number
+    starts_at: string
+    ends_at: string
+  }) => void
 }
 
 export const NucCalendarWeekGrid: React.FC<NucCalendarWeekGridProps> = ({
@@ -33,6 +43,8 @@ export const NucCalendarWeekGrid: React.FC<NucCalendarWeekGridProps> = ({
   weekStartsOn = 1,
   onSlotClick,
   onEventSelect,
+  onEventMove,
+  onEventResize,
 }) => {
   const bodyRef = useRef<HTMLDivElement>(null)
 
@@ -100,6 +112,8 @@ export const NucCalendarWeekGrid: React.FC<NucCalendarWeekGridProps> = ({
               scrollable={false}
               onSlotClick={onSlotClick}
               onEventSelect={onEventSelect}
+              onEventMove={onEventMove}
+              onEventResize={onEventResize}
             />
           </div>
         ))}

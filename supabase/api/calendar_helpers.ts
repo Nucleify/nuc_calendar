@@ -32,6 +32,11 @@ export interface ParsedEventBody {
   color: string | null
 }
 
+export type ParsedEventPatchBody = Partial<ParsedEventBody> & {
+  starts_at?: string
+  ends_at?: string
+}
+
 export function parseEventBody(
   body: Json
 ): ParsedEventBody | { error: string } {
@@ -70,6 +75,53 @@ export function parseEventBody(
     contact_id: record.contact_id ?? null,
     color: trimString(record.color) || null,
   }
+}
+
+export function parseEventPatchBody(
+  body: Json
+): ParsedEventPatchBody | { error: string } {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    return { error: 'Invalid body' }
+  }
+
+  const record = body as Record<string, unknown>
+
+  const startsAt = trimString(record.starts_at)
+  const endsAt = trimString(record.ends_at)
+  if (startsAt || endsAt) {
+    if (!startsAt)
+      return { error: 'starts_at is required when ends_at is provided' }
+    if (!endsAt)
+      return { error: 'ends_at is required when starts_at is provided' }
+    const starts = new Date(startsAt)
+    const ends = new Date(endsAt)
+    if (Number.isNaN(starts.getTime()) || Number.isNaN(ends.getTime())) {
+      return { error: 'starts_at and ends_at must be valid ISO dates' }
+    }
+    if (ends <= starts) return { error: 'ends_at must be after starts_at' }
+  }
+
+  const title = trimString(record.title)
+  const patch: ParsedEventPatchBody = {}
+  if (title) patch.title = title
+  if ('description' in record)
+    patch.description = trimString(record.description) || null
+  if ('location' in record) patch.location = trimString(record.location) || null
+  if ('meeting_url' in record)
+    patch.meeting_url = trimString(record.meeting_url) || null
+  if (startsAt) patch.starts_at = new Date(startsAt).toISOString()
+  if (endsAt) patch.ends_at = new Date(endsAt).toISOString()
+  if ('all_day' in record) patch.all_day = Boolean(record.all_day)
+  if ('timezone' in record) patch.timezone = trimString(record.timezone, 'UTC')
+  if ('status' in record) patch.status = trimString(record.status, 'confirmed')
+  if ('show_as' in record) patch.show_as = trimString(record.show_as, 'busy')
+  if ('calendar_id' in record) patch.calendar_id = record.calendar_id ?? null
+  if ('contact_id' in record) patch.contact_id = record.contact_id ?? null
+  if ('color' in record) patch.color = trimString(record.color) || null
+
+  if (Object.keys(patch).length === 0)
+    return { error: 'No updatable fields provided' }
+  return patch
 }
 
 export function nextEventReference(userId: string, sequence: number): string {

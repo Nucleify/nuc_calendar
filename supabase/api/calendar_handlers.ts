@@ -9,55 +9,19 @@ import {
   formatCalendarRows,
   nextEventReference,
   parseEventBody,
+  parseEventPatchBody,
   trimString,
 } from './calendar_helpers'
-import { CALENDAR_INTEGRATION_PROVIDERS } from './integration_providers'
 
-async function ensureDefaultCalendar(
-  ctx: ApiContext,
-  userId: string
-): Promise<{ id: number } | { error: string }> {
-  const { data: existing, error: listError } = await ctx.supabase
-    .from('calendar_calendars')
-    .select('id')
-    .eq('user_id', userId)
-    .eq('is_default', true)
-    .order('id', { ascending: true })
-    .limit(1)
-    .maybeSingle()
-
-  if (listError) return { error: listError.message }
-  if (existing?.id) return { id: Number(existing.id) }
-
-  const { data, error } = await ctx.supabase
-    .from('calendar_calendars')
-    .insert({
-      user_id: userId,
-      name: 'Meetings',
-      slug: 'meetings',
-      color: '#3B82F6',
-      timezone: 'Europe/Warsaw',
-      is_default: true,
-      is_visible: true,
-      sort_order: 0,
-    })
-    .select('id')
-    .single()
-
-  if (error) return { error: error.message }
-  return { id: Number(data.id) }
-}
-
-async function countUserEvents(
-  ctx: ApiContext,
-  userId: string
-): Promise<number> {
-  const { count } = await ctx.supabase
-    .from('calendar_events')
-    .select('id', { count: 'exact', head: true })
-    .eq('user_id', userId)
-  return count ?? 0
-}
+import { CALENDAR_INTEGRATION_PROVIDERS } from '../../atomic/bosons/constants/integration_providers'
+import { parseAvailabilityPutBody } from './utils/availability_rules'
+import type { CalendarAvailabilityRuleRow } from './utils/availability_slots'
+import { computeDaySlots } from './utils/availability_slots'
+import {
+  countUserEvents,
+  ensureDefaultCalendar,
+} from './utils/calendar_repository'
+import { isoDate, parseIntParam } from './utils/query'
 
 export async function handleListCalendars(ctx: ApiContext, userId: string) {
   const { data, error } = await ctx.supabase
@@ -177,26 +141,12 @@ export async function handleUpdateEvent(ctx: ApiContext, userId: string) {
   if (!id) return apiError(400, 'Event id is required')
 
   const raw = (await readBody(ctx.event)) as Json | null
-  const parsed = parseEventBody(raw ?? {})
+  const parsed = parseEventPatchBody(raw ?? {})
   if ('error' in parsed) return apiError(400, parsed.error)
 
   const { data, error } = await ctx.supabase
     .from('calendar_events')
-    .update({
-      title: parsed.title,
-      description: parsed.description,
-      location: parsed.location,
-      meeting_url: parsed.meeting_url,
-      starts_at: parsed.starts_at,
-      ends_at: parsed.ends_at,
-      all_day: parsed.all_day,
-      timezone: parsed.timezone,
-      status: parsed.status,
-      show_as: parsed.show_as,
-      contact_id: parsed.contact_id,
-      color: parsed.color,
-      updated_at: new Date().toISOString(),
-    })
+    .update({ ...parsed, updated_at: new Date().toISOString() })
     .eq('id', id)
     .eq('user_id', userId)
     .select('*')
@@ -222,6 +172,94 @@ export async function handleDeleteEvent(ctx: ApiContext, userId: string) {
   if (error) return fromSupabaseError(error)
   if (!data) return apiError(404, 'Event not found')
   return apiMsg('Event cancelled')
+}
+
+export async function handleGetAvailability(ctx: ApiContext, userId: string) {
+  const query = getQuery(ctx.event)
+  const calendarId = trimString(query.calendar_id)
+
+  let q = ctx.supabase
+    .from('calendar_availability_rules')
+    .select('*')
+    .eq('user_id', userId)
+    .order('day_of_week', { ascending: true })
+    .order('start_time', { ascending: true })
+
+  if (calendarId) q = q.eq('calendar_id', calendarId)
+
+  const { data, error } = await q
+  if (error) return fromSupabaseError(error)
+  return apiOk(ctx, data ?? [])
+}
+
+export async function handlePutAvailability(ctx: ApiContext, userId: string) {
+  const raw = (await readBody(ctx.event)) as Json | null
+  const parsed = parseAvailabilityPutBody(raw, userId)
+  if ('error' in parsed) return apiError(400, parsed.error)
+
+  const { calendar_id: calendarId, rules: mapped } = parsed
+
+  const { error: delError } = await ctx.supabase
+    .from('calendar_availability_rules')
+    .delete()
+    .eq('user_id', userId)
+    .eq('calendar_id', calendarId)
+
+  if (delError) return fromSupabaseError(delError)
+
+  if (mapped.length === 0) return apiMsg('Availability cleared')
+
+  const { data, error } = await ctx.supabase
+    .from('calendar_availability_rules')
+    .insert(mapped)
+    .select('*')
+
+  if (error) return fromSupabaseError(error, 400)
+  return apiOk(ctx, data ?? [])
+}
+
+export async function handleGetAvailableSlots(ctx: ApiContext, userId: string) {
+  const query = getQuery(ctx.event)
+  const dateStr = isoDate(query.date)
+  const calendarId = trimString(query.calendar_id)
+  const durationMinutes = parseIntParam(query.duration_minutes, 30)
+  const stepMinutes = parseIntParam(query.step_minutes, 30)
+
+  if (!dateStr) return apiError(400, 'date is required (YYYY-MM-DD)')
+  if (!calendarId) return apiError(400, 'calendar_id is required')
+
+  const day = new Date(`${dateStr}T00:00:00.000Z`)
+  const dayStart = `${dateStr}T00:00:00.000Z`
+  const dayEnd = `${dateStr}T23:59:59.999Z`
+
+  const { data: rules, error: rulesError } = await ctx.supabase
+    .from('calendar_availability_rules')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('calendar_id', calendarId)
+
+  if (rulesError) return fromSupabaseError(rulesError)
+
+  const { data: events, error: eventsError } = await ctx.supabase
+    .from('calendar_events')
+    .select('starts_at, ends_at')
+    .eq('user_id', userId)
+    .eq('calendar_id', calendarId)
+    .neq('status', 'cancelled')
+    .lt('starts_at', dayEnd)
+    .gt('ends_at', dayStart)
+
+  if (eventsError) return fromSupabaseError(eventsError)
+
+  const slots = computeDaySlots(
+    day,
+    durationMinutes,
+    stepMinutes,
+    (rules ?? []) as CalendarAvailabilityRuleRow[],
+    (events ?? []) as Array<{ starts_at: string; ends_at: string }>
+  )
+
+  return apiOk(ctx, slots)
 }
 
 export const routeListCalendars = whenAuth(
@@ -259,6 +297,21 @@ export const routeDeleteEvent = whenAuth(
   handleDeleteEvent
 )
 
+export const routeGetAvailability = whenAuth(
+  { method: 'GET', len: 2, path: ['calendar', 'availability'] },
+  handleGetAvailability
+)
+
+export const routePutAvailability = whenAuth(
+  { method: ['PUT', 'PATCH'], len: 2, path: ['calendar', 'availability'] },
+  handlePutAvailability
+)
+
+export const routeGetAvailableSlots = whenAuth(
+  { method: 'GET', len: 2, path: ['calendar', 'available-slots'] },
+  handleGetAvailableSlots
+)
+
 export const calendarRoutes: ApiAuthRoute[] = [
   routeListCalendars,
   routeListIntegrations,
@@ -267,4 +320,7 @@ export const calendarRoutes: ApiAuthRoute[] = [
   routeCreateEvent,
   routeUpdateEvent,
   routeDeleteEvent,
+  routeGetAvailability,
+  routePutAvailability,
+  routeGetAvailableSlots,
 ]

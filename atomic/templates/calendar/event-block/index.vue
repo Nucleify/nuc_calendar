@@ -12,11 +12,15 @@
     v-else
     type="button"
     class="calendar-event-block"
+    :data-event-id="String(event.id ?? '')"
     :style="blockStyle"
     @click="emit('select', event)"
   >
-    <p class="calendar-event-block-title">{{ event.title }}</p>
-    <p v-if="showTime" class="calendar-event-block-time">{{ timeLabel }}</p>
+    <div class="calendar-event-block-header">
+      <p class="calendar-event-block-title">{{ event.title }}</p>
+      <p v-if="showTime" class="calendar-event-block-time">{{ timeLabel }}</p>
+    </div>
+    <span class="calendar-event-block-resize-handle" />
   </button>
 </template>
 

@@ -1,4 +1,4 @@
-import type { CalendarIntegrationProviderId } from '../constants/integration_providers'
+import type { CalendarIntegrationProviderId } from 'nucleify'
 
 export const CALENDAR_INTEGRATION_ICONS: Record<
   CalendarIntegrationProviderId,

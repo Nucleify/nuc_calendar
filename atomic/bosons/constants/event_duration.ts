@@ -1,0 +1,5 @@
+export const CALENDAR_EVENT_DURATION_MINUTES = [
+  15, 30, 45, 60, 90, 120, 180, 240,
+] as const
+
+export const DEFAULT_CALENDAR_EVENT_DURATION_MINUTES = 30

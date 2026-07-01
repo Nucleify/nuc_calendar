@@ -17,6 +17,8 @@
       @slot-click="openCreateFromSlot"
       @day-click="openDayView"
       @event-select="openEditDialog"
+      @event-move="moveEvent"
+      @event-resize="moveEvent"
     />
     <ad-dialog
       :visible="integrationsVisible"
@@ -58,6 +60,7 @@ import {
   CALENDAR_SLOT_DURATION_MINUTES,
   CALENDAR_WEEK_STARTS_ON,
   defaultNewEventHour,
+  flashToast,
   getRangeForView,
   parseCalendarView,
   shiftCalendarAnchor,
@@ -71,6 +74,7 @@ const {
   getIntegrations,
   getEventsInRange,
   createEvent,
+  moveEventTimes,
   updateEvent,
   cancelEvent,
 } = calendarRequests()
@@ -166,6 +170,21 @@ async function removeEvent(id: number): Promise<void> {
   const ok = await cancelEvent(id)
   if (!ok) return
   dialogVisible.value = false
+  await refreshEvents()
+}
+
+async function moveEvent(payload: {
+  id: number
+  starts_at: string
+  ends_at: string
+}): Promise<void> {
+  const ok = await moveEventTimes(
+    payload.id,
+    payload.starts_at,
+    payload.ends_at
+  )
+  if (!ok) return
+  flashToast(t('toast-calendar-event-updated'), 'success', 2000)
   await refreshEvents()
 }
 

@@ -65,20 +65,24 @@
         v-else-if="view === 'week'"
         :anchor="anchor"
         :events="events"
-        :day-start-hour="dayStartHour"
-        :day-end-hour="dayEndHour"
+        :day-start-hour="CALENDAR_DAY_VIEW_START_HOUR"
+        :day-end-hour="CALENDAR_DAY_VIEW_END_HOUR"
         :week-starts-on="weekStartsOn"
-        @slot-click="(day, hour) => emit('slot-click', day, hour)"
+        @slot-click="(day: Date, hour: number) => emit('slot-click', day, hour)"
         @event-select="emit('event-select', $event)"
+        @event-move="emit('event-move', $event)"
+        @event-resize="emit('event-resize', $event)"
       />
       <nuc-calendar-day-grid
         v-else
         :day="anchor"
         :events="events"
-        :day-start-hour="dayStartHour"
-        :day-end-hour="dayEndHour"
-        @slot-click="(day, hour) => emit('slot-click', day, hour)"
+        :day-start-hour="CALENDAR_DAY_VIEW_START_HOUR"
+        :day-end-hour="CALENDAR_DAY_VIEW_END_HOUR"
+        @slot-click="(day: Date, hour: number) => emit('slot-click', day, hour)"
         @event-select="emit('event-select', $event)"
+        @event-move="emit('event-move', $event)"
+        @event-resize="emit('event-resize', $event)"
       />
     </div>
   </section>
@@ -89,7 +93,12 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import type { CalendarView, NucCalendarEventObjectInterface } from 'nucleify'
-import { CALENDAR_VIEWS, formatRangeLabel } from 'nucleify'
+import {
+  CALENDAR_DAY_VIEW_END_HOUR,
+  CALENDAR_DAY_VIEW_START_HOUR,
+  CALENDAR_VIEWS,
+  formatRangeLabel,
+} from 'nucleify'
 
 const props = defineProps<{
   view: CalendarView
@@ -111,6 +120,8 @@ const emit = defineEmits<{
   'slot-click': [day: Date, hour: number]
   'day-click': [day: Date]
   'event-select': [event: NucCalendarEventObjectInterface]
+  'event-move': [payload: { id: number; starts_at: string; ends_at: string }]
+  'event-resize': [payload: { id: number; starts_at: string; ends_at: string }]
 }>()
 
 const { t } = useI18n()

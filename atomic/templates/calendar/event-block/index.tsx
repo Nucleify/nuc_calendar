@@ -16,6 +16,7 @@ interface NucCalendarEventBlockProps {
   layout?: CalendarLayoutBlock
   variant?: 'time' | 'month'
   showTime?: boolean
+  className?: string
   onSelect?: (event: NucCalendarEventObjectInterface) => void
 }
 
@@ -24,6 +25,7 @@ export const NucCalendarEventBlock: React.FC<NucCalendarEventBlockProps> = ({
   layout,
   variant = 'time',
   showTime = true,
+  className,
   onSelect,
 }) => {
   const blockStyle = useMemo(() => {
@@ -63,14 +65,21 @@ export const NucCalendarEventBlock: React.FC<NucCalendarEventBlockProps> = ({
   return (
     <button
       type="button"
-      className="calendar-event-block"
+      className={`calendar-event-block${className ? ` ${className}` : ''}`}
       style={blockStyle}
+      data-event-id={String(event.id ?? '')}
       onClick={() => onSelect?.(event)}
     >
-      <AdParagraph text={event.title} className="calendar-event-block-title" />
-      {showTime ? (
-        <AdParagraph text={timeLabel} className="calendar-event-block-time" />
-      ) : null}
+      <div className="calendar-event-block-header">
+        <AdParagraph
+          text={event.title}
+          className="calendar-event-block-title"
+        />
+        {showTime ? (
+          <AdParagraph text={timeLabel} className="calendar-event-block-time" />
+        ) : null}
+      </div>
+      <span className="calendar-event-block-resize-handle" />
     </button>
   )
 }

@@ -237,6 +237,7 @@ export function shiftCalendarAnchor(
 }
 
 export function formatHourLabel(hour: number, locale = 'en'): string {
+  if (hour >= 24) return ''
   const date = new Date()
   date.setHours(hour, 0, 0, 0)
   return new Intl.DateTimeFormat(locale, {

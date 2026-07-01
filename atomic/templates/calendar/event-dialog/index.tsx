@@ -5,12 +5,15 @@ import React, { useEffect, useMemo, useState } from 'react'
 import {
   AdButton,
   AdDialog,
+  applyEventDuration,
   type CalendarEventDraft,
   type ComponentType,
+  eventDurationMinutes,
   getComponent,
   isSelectOrDatePicker,
   readCalendarEventFieldValue,
   t,
+  useCalendarEventDurationOptions,
   useCalendarEventFields,
   writeCalendarEventFieldValue,
 } from 'nucleify'
@@ -35,10 +38,21 @@ export const NucCalendarEventDialog: React.FC<NucCalendarEventDialogProps> = ({
   onCancelEvent,
 }) => {
   const { fields } = useCalendarEventFields(t)
+  const durationOptions = useCalendarEventDurationOptions(t)
   const [draft, setDraft] = useState<CalendarEventDraft>({ ...initialDraft })
+  const [durationMinutes, setDurationMinutes] = useState(() =>
+    initialDraft.starts_at && initialDraft.ends_at
+      ? eventDurationMinutes(initialDraft.starts_at, initialDraft.ends_at)
+      : 30
+  )
 
   useEffect(() => {
     setDraft({ ...initialDraft })
+    if (initialDraft.starts_at && initialDraft.ends_at) {
+      setDurationMinutes(
+        eventDurationMinutes(initialDraft.starts_at, initialDraft.ends_at)
+      )
+    }
   }, [initialDraft])
 
   const fieldComponents = useMemo(
@@ -51,6 +65,27 @@ export const NucCalendarEventDialog: React.FC<NucCalendarEventDialogProps> = ({
       })),
     [fields]
   )
+
+  const DatePicker = getComponent('date-picker') as React.ElementType
+  const Select = getComponent('select') as React.ElementType
+
+  function setStartDate(value: unknown): void {
+    setDraft((current) => {
+      const next = writeCalendarEventFieldValue(current, 'starts_at', value)
+      return applyEventDuration(next, durationMinutes)
+    })
+  }
+
+  function setDuration(value: unknown): void {
+    const minutes = Number(value)
+    if (!Number.isFinite(minutes)) return
+    setDurationMinutes(minutes)
+    setDraft((current) => applyEventDuration(current, minutes))
+  }
+
+  function saveDraft(): void {
+    onSave?.(applyEventDuration({ ...draft }, durationMinutes))
+  }
 
   return (
     <AdDialog
@@ -83,7 +118,7 @@ export const NucCalendarEventDialog: React.FC<NucCalendarEventDialogProps> = ({
           <AdButton
             label={t('common-save')}
             nuiType="main"
-            onClick={() => onSave?.({ ...draft })}
+            onClick={saveDraft}
           />
         </div>
       }
@@ -93,10 +128,50 @@ export const NucCalendarEventDialog: React.FC<NucCalendarEventDialogProps> = ({
         action="#"
         onSubmit={(event) => {
           event.preventDefault()
-          onSave?.({ ...draft })
+          saveDraft()
         }}
       >
         {fieldComponents.map(({ field, Component }) => {
+          if (field.name === 'starts_at') {
+            return (
+              <div key={field.name} className="form-div">
+                <label htmlFor={field.name}>{field.label}</label>
+                <div className="calendar-event-schedule-inputs">
+                  <DatePicker
+                    {...field.props}
+                    id={field.name}
+                    value={readCalendarEventFieldValue(draft, field.name)}
+                    onChange={(event: {
+                      target?: { value: unknown }
+                      value?: unknown
+                    }) => {
+                      const value = event?.value ?? event?.target?.value
+                      setStartDate(value)
+                    }}
+                    nuiType="main"
+                    panelClass="calendar"
+                  />
+                  <Select
+                    id="duration_minutes"
+                    value={durationMinutes}
+                    options={durationOptions}
+                    optionLabel="label"
+                    optionValue="value"
+                    onChange={(event: {
+                      target?: { value: unknown }
+                      value?: unknown
+                    }) => {
+                      const value = event?.value ?? event?.target?.value
+                      setDuration(value)
+                    }}
+                    nuiType="main"
+                    panelClass="calendar"
+                  />
+                </div>
+              </div>
+            )
+          }
+
           const isSelectLike = isSelectOrDatePicker(field.type)
           return (
             <div key={field.name} className="form-div">

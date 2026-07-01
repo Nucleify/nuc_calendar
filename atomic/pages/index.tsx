@@ -15,6 +15,7 @@ import {
   type CalendarView,
   calendarRequests,
   defaultNewEventHour,
+  flashToast,
   getRangeForView,
   NucCalendarBoard,
   NucCalendarEventDialog,
@@ -36,6 +37,7 @@ export function NucCalendarPage(): JSX.Element {
     getIntegrations,
     getEventsInRange,
     createEvent,
+    moveEventTimes,
     updateEvent,
     cancelEvent,
   } = calendarRequests('next')
@@ -116,6 +118,21 @@ export function NucCalendarPage(): JSX.Element {
     await refreshEvents()
   }
 
+  const moveEvent = async (payload: {
+    id: number
+    starts_at: string
+    ends_at: string
+  }) => {
+    const ok = await moveEventTimes(
+      payload.id,
+      payload.starts_at,
+      payload.ends_at
+    )
+    if (!ok) return
+    flashToast(t('toast-calendar-event-updated'), 'success', 2000)
+    await refreshEvents()
+  }
+
   useEffect(() => {
     void getIntegrations(false)
   }, [])
@@ -145,6 +162,8 @@ export function NucCalendarPage(): JSX.Element {
         onSlotClick={openCreateFromSlot}
         onDayClick={openDayView}
         onEventSelect={openEditDialog}
+        onEventMove={moveEvent}
+        onEventResize={moveEvent}
       />
       <AdDialog
         visible={integrationsVisible}

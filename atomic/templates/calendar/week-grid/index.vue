@@ -41,8 +41,10 @@
           :day-end-hour="dayEndHour"
           :show-hours="false"
           :scrollable="false"
-          @slot-click="(slotDay, hour) => emit('slot-click', slotDay, hour)"
+          @slot-click="(slotDay: Date, hour: number) => emit('slot-click', slotDay, hour)"
           @event-select="emit('event-select', $event)"
+          @event-move="emit('event-move', $event)"
+          @event-resize="emit('event-resize', $event)"
         />
       </div>
     </div>
@@ -73,6 +75,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   'slot-click': [day: Date, hour: number]
   'event-select': [event: NucCalendarEventObjectInterface]
+  'event-move': [payload: { id: number; starts_at: string; ends_at: string }]
+  'event-resize': [payload: { id: number; starts_at: string; ends_at: string }]
 }>()
 
 const bodyRef = ref<HTMLElement | null>(null)

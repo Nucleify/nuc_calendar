@@ -1,8 +1,7 @@
 import type { EntityFieldInterface } from 'nucleify'
 
-const dateTimePickerProps = {
-  showTime: true,
-  hourFormat: '24',
+const datePickerProps = {
+  showTime: false,
   dateFormat: 'yy-mm-dd',
 } as const
 
@@ -14,7 +13,6 @@ export function useCalendarEventFields(translate: TranslateFn): {
   const fieldData: readonly [string, string, string][] = [
     ['title', 'calendar-field-title', 'input-text'],
     ['starts_at', 'calendar-field-starts-at', 'date-picker'],
-    ['ends_at', 'calendar-field-ends-at', 'date-picker'],
     ['location', 'calendar-field-location', 'input-text'],
     ['description', 'calendar-field-description', 'textarea'],
   ] as const
@@ -24,7 +22,7 @@ export function useCalendarEventFields(translate: TranslateFn): {
       let props: Record<string, unknown> | undefined
 
       if (type === 'date-picker') {
-        props = { ...dateTimePickerProps }
+        props = { ...datePickerProps }
       } else if (name === 'title') {
         props = { placeholder: translate('calendar-field-title-placeholder') }
       } else if (name === 'location') {

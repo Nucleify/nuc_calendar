@@ -1,0 +1,2 @@
+export const MIN_EVENT_DURATION_MINUTES = 15
+export const CALENDAR_DRAG_SNAP_MINUTES = 15
