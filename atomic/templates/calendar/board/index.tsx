@@ -76,17 +76,17 @@ export const NucCalendarBoard: React.FC<NucCalendarBoardProps> = ({
         <div className="calendar-board-toolbar-left">
           <AdButton
             icon="prime:chevron-left"
-            adType="secondary"
+            nuiType="secondary"
             onClick={() => onNavigate?.(-1)}
           />
           <AdButton
             label={t('calendar-today')}
-            adType="secondary"
+            nuiType="secondary"
             onClick={onToday}
           />
           <AdButton
             icon="prime:chevron-right"
-            adType="secondary"
+            nuiType="secondary"
             onClick={() => onNavigate?.(1)}
           />
           <AdParagraph
@@ -109,7 +109,7 @@ export const NucCalendarBoard: React.FC<NucCalendarBoardProps> = ({
           </div>
           <AdButton
             icon="prime:cog"
-            adType="secondary"
+            nuiType="secondary"
             aria-label={t('calendar-integrations')}
             className={
               integrationsOpen ? 'calendar-board-integrations-active' : ''
@@ -119,7 +119,7 @@ export const NucCalendarBoard: React.FC<NucCalendarBoardProps> = ({
           <AdButton
             label={t('calendar-new-event')}
             icon="prime:plus"
-            adType="main"
+            nuiType="main"
             onClick={onNewEvent}
           />
         </div>

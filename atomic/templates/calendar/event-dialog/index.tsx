@@ -82,7 +82,7 @@ export const NucCalendarEventDialog: React.FC<NucCalendarEventDialogProps> = ({
           />
           <AdButton
             label={t('common-save')}
-            adType="main"
+            nuiType="main"
             onClick={() => onSave?.({ ...draft })}
           />
         </div>
@@ -114,7 +114,7 @@ export const NucCalendarEventDialog: React.FC<NucCalendarEventDialogProps> = ({
                     writeCalendarEventFieldValue(current, field.name, value)
                   )
                 }}
-                adType="main"
+                nuiType="main"
                 {...(isSelectLike ? { panelClass: 'calendar' } : {})}
               />
             </div>

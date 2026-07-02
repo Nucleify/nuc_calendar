@@ -22,7 +22,7 @@
             ? t('calendar-manage')
             : connectLabel
         "
-        :ad-type="integration.connected ? 'secondary' : 'main'"
+        :nui-type="integration.connected ? 'secondary' : 'main'"
         :disabled="!integration.connectable"
         @click="emit('connect', integration.id)"
       />

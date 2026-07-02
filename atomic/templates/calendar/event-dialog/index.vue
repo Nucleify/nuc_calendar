@@ -18,7 +18,7 @@
           :is="getComponent(field.type as ComponentType)"
           :id="field.name"
           :model-value="readCalendarEventFieldValue(draft, field.name) as never"
-          ad-type="main"
+          nui-type="main"
           v-bind="field.props"
           :panel-class="isSelectOrDatePicker(field.type) ? 'main' : undefined"
           @update:model-value="(value: unknown) => setField(field.name, value)"
@@ -39,7 +39,7 @@
           severity="secondary"
           @click="emit('close')"
         />
-        <ad-button :label="t('common-save')" ad-type="main" @click="submit" />
+        <ad-button :label="t('common-save')" nui-type="main" @click="submit" />
       </div>
     </template>
   </ad-dialog>

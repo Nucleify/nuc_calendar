@@ -49,7 +49,7 @@ export const NucCalendarIntegrationTile: React.FC<
         ) : null}
         <AdButton
           label={integration.connected ? t('calendar-manage') : connectLabel}
-          adType={integration.connected ? 'secondary' : 'main'}
+          nuiType={integration.connected ? 'secondary' : 'main'}
           disabled={!integration.connectable}
           onClick={() => onConnect?.(integration.id)}
         />

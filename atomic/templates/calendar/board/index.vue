@@ -7,17 +7,17 @@
       <div class="calendar-board-toolbar-left">
         <ad-button
           icon="prime:chevron-left"
-          ad-type="secondary"
+          nui-type="secondary"
           @click="emit('navigate', -1)"
         />
         <ad-button
           :label="t('calendar-today')"
-          ad-type="secondary"
+          nui-type="secondary"
           @click="emit('today')"
         />
         <ad-button
           icon="prime:chevron-right"
-          ad-type="secondary"
+          nui-type="secondary"
           @click="emit('navigate', 1)"
         />
         <p class="calendar-board-range-label">{{ rangeLabel }}</p>
@@ -39,7 +39,7 @@
         </div>
         <ad-button
           icon="prime:cog"
-          ad-type="secondary"
+          nui-type="secondary"
           :aria-label="t('calendar-integrations')"
           :class="{ 'calendar-board-integrations-active': integrationsOpen }"
           @click="emit('open-integrations')"
@@ -47,7 +47,7 @@
         <ad-button
           :label="t('calendar-new-event')"
           icon="prime:plus"
-          ad-type="main"
+          nui-type="main"
           @click="emit('new-event')"
         />
       </div>
